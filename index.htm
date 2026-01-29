@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 Alliance Speedup Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-content">
+                <h1><i class="fas fa-crown"></i> Alliance Speedup Tracker</h1>
+                <p class="subtitle">Track speedup days & see available time slots! 🕒✨</p>
+            </div>
+            <div class="header-emoji">🏰⏰📊</div>
+        </header>
+
+        <!-- Signup Section -->
+        <section class="signup-section">
+            <div class="signup-card">
+                <div class="signup-icon">
+                    <i class="fas fa-feather-alt"></i>
+                </div>
+                <div class="signup-content">
+                    <h3><i class="fas fa-paper-plane"></i> Join the Tracker!</h3>
+                    <p>Add your speedup days and choose your available time slots.</p>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfADPcdErz5eagCxTXLA9N3-tYjdIQPzF6zhoNyaXZan2RQHw/viewform" 
+                       target="_blank" 
+                       class="form-link">
+                        <i class="fab fa-google"></i> Submit Your Availability
+                    </a>
+                    <p class="form-note">
+                        <i class="fas fa-chart-line"></i> 
+                        View the live data: 
+                        <a href="https://docs.google.com/spreadsheets/d/10BhRz6XScI_kEro08ZhBvkuyBhbDqJI1IziqOMriqIQ/edit?gid=1911912942#gid=1911912942" 
+                           target="_blank" 
+                           style="color: #6a8cff; text-decoration: underline;">
+                           Open Google Sheet
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Dashboard -->
+        <section class="dashboard">
+            <div class="stat-card stat-pink">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <h3>Total Players</h3>
+                    <p id="totalPlayers" class="stat-number">0</p>
+                </div>
+            </div>
+            <div class="stat-card stat-blue">
+                <div class="stat-icon">📅</div>
+                <div class="stat-info">
+                    <h3>Total Days</h3>
+                    <p id="totalSpeedups" class="stat-number">0</p>
+                </div>
+            </div>
+            <div class="stat-card stat-green">
+                <div class="stat-icon">🛡️</div>
+                <div class="stat-info">
+                    <h3>Alliances</h3>
+                    <p id="allianceName" class="stat-text">—</p>
+                </div>
+            </div>
+            <div class="stat-card stat-yellow">
+                <div class="stat-icon">🕒</div>
+                <div class="stat-info">
+                    <h3>Next Refresh</h3>
+                    <p id="nextRefresh" class="stat-text">3:00</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Tabs -->
+        <section class="tabs-section">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="players">
+                    <i class="fas fa-users"></i> Players List
+                </button>
+                <button class="tab-btn" data-tab="availability">
+                    <i class="far fa-calendar-alt"></i> Time Slot Availability
+                </button>
+            </div>
+            
+            <!-- Players List Tab -->
+            <div class="tab-content active" id="players-tab">
+                <!-- Controls & Filters -->
+                <div class="controls">
+                    <button id="refreshBtn" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> Refresh Now
+                    </button>
+                    <div class="filter-container">
+                        <div class="filter-group">
+                            <label for="typeFilter"><i class="fas fa-filter"></i> Show Only:</label>
+                            <select id="typeFilter">
+                                <option value="all">All Activities</option>
+                                <option value="construction">🏗️ Construction</option>
+                                <option value="research">🔬 Research</option>
+                                <option value="training">⚔️ Training</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="allianceFilter"><i class="fas fa-shield-alt"></i> Alliance:</label>
+                            <select id="allianceFilter">
+                                <option value="all">All Alliances</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="playerSearch"><i class="fas fa-search"></i> Search Player:</label>
+                            <input type="text" id="playerSearch" placeholder="Type name...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Players Table -->
+                <div class="table-section">
+                    <div class="table-header">
+                        <h3><i class="fas fa-table"></i> Alliance Schedule (Sorted by Total Days)</h3>
+                        <div class="table-actions">
+                            <span id="lastUpdateTime">Last updated: Never</span>
+                            <span class="status-badge"><i class="fas fa-circle"></i> Auto-refresh ON</span>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="speedupTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Player</th>
+                                    <th>Alliance</th>
+                                    <th><i class="fas fa-hammer"></i> Construction</th>
+                                    <th><i class="fas fa-flask"></i> Research</th>
+                                    <th><i class="fas fa-running"></i> Training</th>
+                                    <th><i class="fas fa-calendar-alt"></i> Total Days</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="loadingRow">
+                                    <td colspan="7">
+                                        <div class="loading-spinner">
+                                            <i class="fas fa-spinner fa-spin"></i> Loading alliance data...
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Slot Availability Tab -->
+            <div class="tab-content" id="availability-tab">
+                <div class="availability-header">
+                    <h3><i class="far fa-calendar-alt"></i> Time Slot Availability</h3>
+                    <p class="availability-subtitle">Each 30-minute slot can only have ONE player per ministry type</p>
+                </div>
+                
+                <div class="availability-controls">
+                    <div class="filter-group">
+                        <label for="activityFilter"><i class="fas fa-tasks"></i> Ministry Type:</label>
+                        <select id="activityFilter">
+                            <option value="construction">🏗️ Construction</option>
+                            <option value="research">🔬 Research</option>
+                            <option value="training">⚔️ Training</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="allianceAvailabilityFilter"><i class="fas fa-shield-alt"></i> Alliance:</label>
+                        <select id="allianceAvailabilityFilter">
+                            <option value="all">All Alliances</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Ministry Legend -->
+                <div class="ministry-legend">
+                    <div class="legend-item">
+                        <div class="slot-available"></div>
+                        <span>Available Slot (No player)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="slot-taken"></div>
+                        <span>Taken Slot (1 player)</span>
+                    </div>
+                </div>
+
+                <!-- Time Slot Grid -->
+                <div class="time-slots-grid" id="timeSlotsGrid">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i> Loading time slot data...
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Made with <i class="fas fa-heart" style="color:#ff6b8b;"></i> for alliance coordination | Data updates automatically every 3 minutes | 🕒 Each slot allows only 1 player per ministry</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
