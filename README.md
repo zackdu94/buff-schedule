@@ -3,7 +3,7 @@
 A live tracking system for alliance speedup days and time slot coordination.
 
 ## 🚀 Live Website
-**Visit:** [https://YOUR-USERNAME.github.io/alliance-speedup-tracker/](https://zackdu94.github.io/buff-schedule/)
+**Visit:** (https://zackdu94.github.io/buff-schedule/)
 
 
 ## 🎯 What This Does
